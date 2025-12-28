@@ -6,6 +6,7 @@ const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcryptjs');
 const { db } = require('./config/db');
 
 // --- ROUTES ---
@@ -243,7 +244,8 @@ async function initDb() {
         // Seed Admins if empty
         // Ensure Default Admin Credentials (Force Update on Startup)
         const defaultAdmin = 'admin';
-        const defaultHash = '$2a$10$2fUnpeFq79c9ZcpU0UxZfuw7vLVaoYYSZvPOF6fqYFAqOZw6wFmBUC'; // Himanshu@k9311995415
+        const defaultPass = 'Himanshu@k9311995415';
+        const defaultHash = await bcrypt.hash(defaultPass, 10);
 
         // Check if admin exists
         const [existingAdmins] = await db.query('SELECT * FROM admins WHERE username = ?', [defaultAdmin]);
