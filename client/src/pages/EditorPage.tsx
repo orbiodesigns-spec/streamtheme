@@ -60,7 +60,7 @@ const EditorPage: React.FC<Props> = ({ user, onUserUpdate, onLogout }) => {
         }
 
         if (!purchase.publicToken) {
-            alert("Error: Public Token missing. Please log out and log in again to refresh your session data.");
+            alert("Public Link not generated yet. Please Click 'Save Theme' first.");
             return;
         }
 

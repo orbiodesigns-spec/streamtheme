@@ -239,6 +239,15 @@ async function initDb() {
         `);
 
         console.log("✓ Database Schema Verified (V3).");
+
+        // Seed Admins if empty
+        const [admins] = await db.query('SELECT * FROM admins');
+        if (admins.length === 0) {
+            console.log('Seeding Default Admin...');
+            // admin / Himanshu@k9311995415
+            await db.query(`INSERT INTO admins (username, password_hash) VALUES
+                ('admin', '$2a$10$2fUnpeFq79c9ZcpU0UxZfuw7vLVaoYYSZvPOF6fqYFAqOZw6wFmBUC')`);
+        }
     } catch (err) {
         console.error(`DB Init Failed: ${err.message}`);
     }

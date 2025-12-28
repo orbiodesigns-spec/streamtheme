@@ -309,9 +309,11 @@ const Dashboard: React.FC<Props> = ({ user, onLogout, onSelectLayout, onUserUpda
                   <button
                     onClick={handleStartTrial}
                     disabled={processing}
-                    className="w-full py-3 border border-dashed border-gray-600 text-gray-300 rounded-lg hover:bg-white/5 hover:border-white hover:text-white transition-all font-bold flex items-center justify-center gap-2"
+                    className="w-full py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-xl hover:scale-[1.02] hover:shadow-xl hover:shadow-orange-500/20 transition-all font-black text-lg flex items-center justify-center gap-3 relative overflow-hidden group"
                   >
-                    <Clock className="w-4 h-4" /> Start 24-Hour Free Trial
+                    <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <Clock className="w-5 h-5 animate-pulse" />
+                    <span>START 24HR FREE TRIAL</span>
                   </button>
                 </div>
               </div>

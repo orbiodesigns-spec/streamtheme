@@ -215,7 +215,8 @@ export const api = {
       body: JSON.stringify({ userId: user.id, layoutId, config })
     });
 
-    return user;
+    // Fetch fresh profile to get the publicToken created by the backend
+    return await api.getProfile();
   },
 
   getPublicLayout: async (token: string, sessionId: string): Promise<{ layoutId: string, config: ThemeConfig | null, isExpired: boolean } | null> => {
