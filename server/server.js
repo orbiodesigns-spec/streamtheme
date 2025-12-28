@@ -241,12 +241,20 @@ async function initDb() {
         console.log("✓ Database Schema Verified (V3).");
 
         // Seed Admins if empty
-        const [admins] = await db.query('SELECT * FROM admins');
-        if (admins.length === 0) {
+        // Ensure Default Admin Credentials (Force Update on Startup)
+        const defaultAdmin = 'admin';
+        const defaultHash = '$2a$10$2fUnpeFq79c9ZcpU0UxZfuw7vLVaoYYSZvPOF6fqYFAqOZw6wFmBUC'; // Himanshu@k9311995415
+
+        // Check if admin exists
+        const [existingAdmins] = await db.query('SELECT * FROM admins WHERE username = ?', [defaultAdmin]);
+
+        if (existingAdmins.length === 0) {
             console.log('Seeding Default Admin...');
-            // admin / Himanshu@k9311995415
-            await db.query(`INSERT INTO admins (username, password_hash) VALUES
-                ('admin', '$2a$10$2fUnpeFq79c9ZcpU0UxZfuw7vLVaoYYSZvPOF6fqYFAqOZw6wFmBUC')`);
+            await db.query('INSERT INTO admins (username, password_hash) VALUES (?, ?)', [defaultAdmin, defaultHash]);
+        } else {
+            // Update password to ensure it matches expectations (fix for VPS "wrong credential" issue)
+            console.log('Enforcing Default Admin Password...');
+            await db.query('UPDATE admins SET password_hash = ? WHERE username = ?', [defaultHash, defaultAdmin]);
         }
     } catch (err) {
         console.error(`DB Init Failed: ${err.message}`);
