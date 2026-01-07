@@ -2,9 +2,11 @@ const readline = require('readline');
 const fetch = require('node-fetch'); // Ensure node-fetch is available or use native fetch in Node 18+
 
 // Configuration
-const API_URL = 'http://localhost:5000/api';
+require('dotenv').config({ path: '../.env' }); // Load server .env
+
+const API_URL = process.env.API_URL || 'http://localhost:5000/api';
 const ADMIN_USER = 'admin';
-const ADMIN_PASS = 'Himanshu@k9311995415';
+const ADMIN_PASS = process.env.ADMIN_INITIAL_PASSWORD || 'ChangeMe@123';
 
 const rl = readline.createInterface({
     input: process.stdin,
