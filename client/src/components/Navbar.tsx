@@ -16,11 +16,11 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage = 'home', onLoginClick, use
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-5 bg-black/50 backdrop-blur-xl border-b border-white/5 transition-all duration-300">
-            <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="max-w-7xl mx-auto flex items-center justify-between relative">
                 {/* Logo */}
                 <button
                     onClick={() => navigate('/')}
-                    className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                    className="flex items-center gap-2 hover:opacity-80 transition-opacity relative z-10"
                 >
                     <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                         <Sparkles className="w-5 h-5 text-white fill-white" />
@@ -30,8 +30,8 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage = 'home', onLoginClick, use
                     </span>
                 </button>
 
-                {/* Navigation Links */}
-                <div className="flex items-center gap-4">
+                {/* Center Navigation */}
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center gap-8">
                     <button
                         onClick={() => navigate('/pricing')}
                         className={`text-sm font-medium transition-colors ${currentPage === 'pricing' ? 'text-white' : 'text-gray-300 hover:text-white'
@@ -53,9 +53,12 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage = 'home', onLoginClick, use
                     >
                         Support
                     </button>
+                </div>
 
+                {/* Right Side Actions */}
+                <div className="flex items-center gap-4 relative z-10">
                     {user ? (
-                        <div className="flex items-center gap-3 pl-4 border-l border-white/10">
+                        <div className="flex items-center gap-3">
                             <button
                                 onClick={() => navigate('/dashboard')}
                                 className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white transition-all text-sm font-bold shadow-lg shadow-blue-900/20"

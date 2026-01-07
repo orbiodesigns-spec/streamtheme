@@ -18,8 +18,13 @@ interface Props {
 const EditorPage: React.FC<Props> = ({ user, onUserUpdate, onLogout }) => {
     const { layoutId } = useParams<{ layoutId: string }>();
     console.log('[EditorPage] Mounted with layoutId:', layoutId);
+
+    const activeLayoutId = layoutId || 'master-standard';
+    const activeThemeModule = themes[activeLayoutId] || themes['master-standard'];
+    const activeDefaultConfig = activeThemeModule.defaultConfig || DEFAULT_THEME;
+
     const navigate = useNavigate();
-    const [theme, setTheme] = useState<ThemeConfig>(DEFAULT_THEME);
+    const [theme, setTheme] = useState<ThemeConfig>(activeDefaultConfig);
     const [isSaving, setIsSaving] = useState(false);
     const [copied, setCopied] = useState(false);
 
@@ -55,7 +60,8 @@ const EditorPage: React.FC<Props> = ({ user, onUserUpdate, onLogout }) => {
         const purchase = purchases.find(p => p.layoutId === layoutId);
 
         if (!purchase) {
-            alert("Error: Layout not found in your purchases. Please try refreshing the page.");
+            console.warn("[EditorPage] Layout not found in user purchases. Current Purchases:", purchases);
+            alert("Configuration not found! Please click 'Save Changes' first to generate your custom link.");
             return;
         }
 
@@ -145,7 +151,7 @@ const EditorPage: React.FC<Props> = ({ user, onUserUpdate, onLogout }) => {
                     const ControlsComponent = CurrentTheme.Controls;
                     return (
                         <ThemeEditorPanel
-                            onReset={() => setTheme(DEFAULT_THEME)}
+                            onReset={() => setTheme(activeDefaultConfig)}
                             onSave={handleManualSave}
                             isSaving={isSaving}
                         >

@@ -18,20 +18,21 @@ const AuthHeader: React.FC<AuthHeaderProps> = ({ user, onLogout, showBackButton 
             {/* Logo */}
             <button
                 onClick={() => navigate('/dashboard')}
-                className="flex items-center gap-2 font-bold text-lg hover:opacity-80 transition-opacity"
+                className="flex items-center gap-2 font-bold text-lg hover:opacity-80 transition-opacity relative z-10"
             >
                 <Layout className="w-6 h-6 text-blue-500" />
                 StreamTheme
             </button>
 
+            {/* Centered Navigation */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center gap-6">
+                <button onClick={() => navigate('/pricing')} className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Pricing</button>
+                <button onClick={() => navigate('/store')} className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Store</button>
+                <button onClick={() => navigate('/support')} className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Support</button>
+            </div>
+
             {/* Right Side */}
-            <div className="flex items-center gap-4">
-                {/* Navigation Links */}
-                <div className="hidden md:flex items-center gap-6 mr-2">
-                    <button onClick={() => navigate('/pricing')} className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Pricing</button>
-                    <button onClick={() => navigate('/store')} className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Store</button>
-                    <button onClick={() => navigate('/support')} className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Support</button>
-                </div>
+            <div className="flex items-center gap-4 relative z-10">
                 {/* User Avatar */}
                 <button
                     onClick={() => navigate('/profile')}

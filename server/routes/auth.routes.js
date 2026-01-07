@@ -145,6 +145,22 @@ router.get('/me', verifyToken, async (req, res) => {
             };
         });
 
+        // NEW: Include layouts that have a saved config/token but NO active subscription (e.g. In-Dev themes or manually saved)
+        configs.forEach(config => {
+            const hasSub = purchases.some(p => p.layoutId === config.layout_id);
+            if (!hasSub) {
+                purchases.push({
+                    layoutId: config.layout_id,
+                    purchaseDate: config.updated_at,
+                    expiryDate: null, // Infinite/Unknown
+                    durationLabel: 'saved-config',
+                    pricePaid: 0,
+                    publicToken: config.public_token,
+                    savedThemeConfig: config.config
+                });
+            }
+        });
+
         // Inject Trial Access if Active
         const hasTrial = user.trial_expiry && new Date(user.trial_expiry) > new Date();
         if (hasTrial) {

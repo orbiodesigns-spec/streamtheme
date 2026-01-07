@@ -147,10 +147,19 @@ async function initDb() {
         const [plans] = await db.query('SELECT * FROM subscription_plans');
         if (plans.length === 0) {
             console.log('Seeding Default Plans...');
-            await db.query(`INSERT INTO subscription_plans (id, name, description, price, duration_months, display_order) VALUES
-                ('monthly', 'Monthly Access', 'Full access for 1 month', 299.00, 1, 1),
-                ('semi_annual', 'Semi-Annual Access', 'Popular! Full access for 6 months', 1599.00, 6, 2),
-                ('yearly', 'Yearly Access', 'Best Value! Full access for 1 year', 2999.00, 12, 3)`);
+            await db.query(`INSERT INTO subscription_plans (id, name, description, price, duration_months, display_order, is_active) VALUES
+                ('monthly', 'Monthly Access', 'Full access for 1 month', 299.00, 1, 1, TRUE),
+                ('semi_annual', 'Semi-Annual Access', 'Popular! Full access for 6 months', 1599.00, 6, 2, TRUE),
+                ('yearly', 'Yearly Access', 'Best Value! Full access for 1 year', 2999.00, 12, 3, TRUE),
+                ('gift', 'Gifted Premium', 'Admin granted access', 0.00, 1, 99, FALSE)`);
+        }
+
+        // Ensure "gift" plan exists (even if other plans exist)
+        const [giftPlan] = await db.query('SELECT * FROM subscription_plans WHERE id = ?', ['gift']);
+        if (giftPlan.length === 0) {
+            console.log("Seeding failed 'gift' plan...");
+            await db.query(`INSERT INTO subscription_plans (id, name, description, price, duration_months, display_order, is_active)
+                VALUES ('gift', 'Gifted Premium', 'Admin granted access', 0.00, 1, 99, FALSE)`);
         }
 
         // Seed Layouts if empty
@@ -159,6 +168,14 @@ async function initDb() {
             console.log('Seeding Default Layouts...');
             await db.query(`INSERT INTO layouts (id, name, description, thumbnail_url, is_active, display_order) VALUES
                 ('master-standard', 'Master Standard', 'The classic reliable layout for everyday streaming.', 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', TRUE, 1)`);
+        }
+
+        // Ensure PRO Custom exists
+        const [proCustom] = await db.query('SELECT * FROM layouts WHERE id = ?', ['pro-custom']);
+        if (proCustom.length === 0) {
+            console.log('Seeding PRO Custom Layout...');
+            await db.query(`INSERT INTO layouts (id, name, description, thumbnail_url, is_active, display_order) VALUES
+                ('pro-custom', 'PRO Custom', 'A professional custom layout for advanced streamers.', 'linear-gradient(135deg, #4338ca 0%, #312e81 100%)', TRUE, 2)`);
         }
 
 
@@ -244,7 +261,10 @@ async function initDb() {
         // Seed Admins if empty
         // Ensure Default Admin Credentials (Force Update on Startup)
         const defaultAdmin = 'admin';
-        const defaultPass = 'Himanshu@k9311995415';
+        const defaultPass = process.env.ADMIN_INITIAL_PASSWORD || 'ChangeMe@123';
+        if (!process.env.ADMIN_INITIAL_PASSWORD) {
+            console.warn('WARNING: Using default insecure admin password. Set ADMIN_INITIAL_PASSWORD in .env');
+        }
         const defaultHash = await bcrypt.hash(defaultPass, 10);
 
         // Check if admin exists
