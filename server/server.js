@@ -273,9 +273,9 @@ async function initDb() {
         if (existingAdmins.length === 0) {
             console.log('Seeding Default Admin...');
             await db.query('INSERT INTO admins (username, password_hash) VALUES (?, ?)', [defaultAdmin, defaultHash]);
-        } else {
-            // Update password to ensure it matches expectations (fix for VPS "wrong credential" issue)
-            console.log('Enforcing Default Admin Password...');
+        } else if (process.env.ADMIN_INITIAL_PASSWORD) {
+            // Only enforce if explicitly set in environment
+            console.log('Enforcing Admin Password from Environment...');
             await db.query('UPDATE admins SET password_hash = ? WHERE username = ?', [defaultHash, defaultAdmin]);
         }
     } catch (err) {
